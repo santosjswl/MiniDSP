@@ -193,6 +193,77 @@
 - Browser visual check: **UNVERIFIED**. Local `GET /login` returned 200, but the integrated browser tab stayed on "Loading your workspace..." and did not hydrate, as in the previous browser check. No screenshot or live-browser behavior is claimed as verified. The existing design inventory and DOM tests were checked instead.
 - Current Git status: branch `main`; modified `src/app/globals.css`, `src/app/page.tsx`, `src/app/workspace.tsx`, `tests/workspace.test.tsx`; new untracked `src/app/workspace-sidebar.tsx`. No commit, push, or deployment.
 
+## GUI fixes against design.md (2026-10-21T10:12Z, on top of commit `df51be5`)
+
+- Human request: "Read design.md and update my application GUI; there are many GUI issues." Baseline commit `df51be5` (author Santosh J, not made in this session).
+- Problems found in the browser and fixed:
+  - **Horizontal overflow (fixed):** `.workspace-content` was `content-box` with `inline-size: 100%` plus padding, measured 1328px in a 1325px column. Added a global `box-sizing: border-box`.
+  - **Card inside a bordered panel (fixed):** removed the `.workspace-section` panels so `lp-card`s sit directly on the page (§5 Card: "most grouped content sitting directly on the page"; avoid nested cards).
+  - **Sidebar on login (fixed):** removed the rail and its "Sign in" item from login (§5 Sidebar: top-level product areas only). Login is now one centred `lp-card--elevated lp-card--borderless` form shell with a single `h1` and an `lp-button--full-width` submit (§5 Card "Composed form shell"; Button "Full width … sign-in forms").
+  - **Duplicate titles/copy (fixed):** removed the repeated login headings and the repeated upload guidance.
+  - **Findings layout (fixed):** framed in a titled Card (§6 Data Table: "framed in a card with a clear title"). The export link sits in a wrapping body row, because the card-header actions slot overflowed at 390px and §7 forbids styling component internals.
+  - **Rail width (fixed):** the mobile grid column (84px) no longer differs from the rail's inline width (100px). Both use one `--app-rail-width` (documented default of 100px). An 85px trial clipped the "Dashboard" label, so it was reverted.
+  - Dashboard panels sit side by side at ≥80rem. Metric cards use 4, 2 or 1 columns. Heading/description spacing now uses tokens.
+  - Removed the unused `.product-shell`, `.dashboard-grid`, `.distribution`, `.login-shell` and `.workspace-section` rules.
+- CSS check: all 27 `var(--…)` tokens used appear in design.md (only the local `--app-rail-width` does not). No raw hex. No selector targets `.lp-*`.
+
+| Exact command | Result | Exit |
+|---|---|---|
+| `npx vitest run tests/workspace.test.tsx tests/pages.test.tsx` | 18 passed / 0 failed / 0 skipped; 2 files | 0 |
+| `npm test` | 76 passed / 0 failed / 0 skipped; 9 files | 0 |
+| `npx tsc --noEmit` | No type errors | 0 |
+| `npm run lint` | No errors or warnings | 0 |
+| `npm run build` | Production build completed; 7 routes plus proxy | 0 |
+
+- **Browser evidence (local dev server, signed-in synthetic test user A):** used a test-only shim for `requestAnimationFrame` and visibility, because the hidden tab stalls React reveals. `scrollWidth ≤ innerWidth` at 1440, 1024, 768 and 390px. The first 390px check failed (444 > 390, export link in the card header), then was fixed and rechecked (375 ≤ 390). On login, at 1440 and 390px: no overflow, 0 `nav` elements, a single `h1` "Sign in", 1 card. Screenshots were reviewed in-session and not saved.
+- An intermediate CSS edit briefly produced a dev-server parse error, fixed by the next edit. The `npm run build` above ran after the fix.
+- **Unverified:** keyboard-only walkthrough, dark/hc themes, real Safari/Chrome mobile devices, and the deployed Vercel site (still running the older UI until pushed and deployed). No commit, push or deployment.
+- **Known gap (not changed):** the rail items are same-page anchors, so Dashboard is always the active item. §5 Sidebar prefers real routes; splitting into `/upload` and `/findings` routes would be a larger change awaiting a decision. **Resolved by the route split below.**
+
+## Sidebar items as real routes (2026-10-21T10:23Z, uncommitted, on top of `df51be5`)
+
+- **Human/critic decision:** implement separate routes for the sidebar items instead of same-page anchors (§5 Sidebar: app-level navigation, exactly one active item, prefer real routes).
+- **Built:**
+  - `/` is Dashboard (totals, risk distribution, recent scans).
+  - `/upload` is the upload form with immediate masked results, plus links to `/findings` and `/`.
+  - `/findings` has the masked findings table, type/risk filters and the filtered CSV export.
+  - Each route runs its own server-side `getUser()` check and calls `redirect("/login")` (`src/app/require-user.ts`). They share an `AppShell` (sidebar + topbar with their own `h1`).
+  - Sidebar hrefs are `/`, `/upload`, `/findings`, using `next/link`, with `aria-current="page"` set per route. `loading.tsx` and `error.tsx` derive the active item from `usePathname()`, so they no longer always mark Dashboard.
+- **Design decisions:**
+  - `workspace.tsx` now exports `DashboardView`, `UploadView` and `FindingsView`, sharing a `useScanHistory` hook (same abort and latest-request guard as before).
+  - The upload page no longer refetches history after saving. The next route visit loads fresh stored data.
+  - Server-only auth code lives in its own module, so the client `error.tsx` can import the shell.
+- **Tests:**
+  - `tests/workspace.test.tsx`: rewritten per view (17 tests).
+  - `tests/pages.test.tsx`: 11 tests covering the redirect for each route, exactly one active item and the correct h1 per route, plus the active item for the loading and error states.
+  - `upload-e2e.test.ts`: 3 real route tests added.
+  - **Removed:** the "slow initial read vs post-upload refresh" DOM test. That scenario no longer exists because upload doesn't refresh history; the request guard code remains.
+- **Failures and retests (kept):**
+  1. Targeted run 5 failed / 23 passed (exit 1). My assertions assumed a single Loading label, but `Loading` renders it twice (visually hidden + `aria-hidden`). Fixed the tests to assert via `role="status"`.
+  2. `npm run lint` failed with 1 error, `@next/next/no-html-link-for-pages` on `<a href="/">`. Switched the in-app links to `next/link`.
+  3. A scripted edit corrupted two import lines. `npm test` failed (58 passed, exit 1), as did `tsc` (exit 2) and lint (exit 1). Fixed the imports and re-ran everything.
+  4. Real E2E failed 3 / passed 12. The streamed HTML contains the `loading.tsx` fallback shell *and* the page, both marking the same route active. The assertion now requires the set of active hrefs to equal `{path}`.
+
+| Exact command | Result | Exit |
+|---|---|---|
+| `npx vitest run tests/workspace.test.tsx tests/pages.test.tsx` | 28 passed / 0 failed / 0 skipped; 2 files | 0 |
+| `npm test` | 86 passed / 0 failed / 0 skipped; 9 files | 0 |
+| `npx tsc --noEmit` | No type errors | 0 |
+| `npm run lint` | No errors or warnings | 0 |
+| `npm run build` | Build completed; 9 routes (incl. dynamic `/upload`, `/findings`) plus proxy | 0 |
+| `NODE_USE_SYSTEM_CA=1 MINIDSP_BASE_URL=http://127.0.0.1:3000 npx vitest run --config vitest.integration.config.mts tests/integration/upload-e2e.test.ts` | **REAL** dev server + dev Supabase: 15 passed / 0 failed / 0 skipped | 0 |
+
+- **Real HTTP checks (local dev server):**
+  - Signed out, `/upload` and `/findings` return 200 streaming with a `NEXT_REDIRECT … /login` and a meta refresh. The body has no "Signed in as", upload form or findings content.
+  - The integrated browser (signed out) redirected `/`, `/upload` and `/findings` to `/login`.
+  - The 200 status (not 307) is due to `loading.tsx` streaming before `redirect()`. Data endpoints still return 401 themselves.
+- **Unverified:**
+  - Authenticated visual/screenshot check of the three routes. The browser tab had no session; the human chose to skip, rather than have me enter credentials.
+  - Keyboard walkthrough, dark/hc themes, real mobile devices.
+  - Deployed site.
+- **Observed, not investigated:** a dev-only React `Performance.measure` "negative time stamp" page error on `FindingsPage` navigation in the browser console. It does not appear in tests or the production build output.
+- RLS suite still NOT RUN (hardening migration not applied; 3 leaked synthetic `*-unmasked.csv` rows remain). No commit, push or deployment.
+
 **Rule:** Keep failures and retests. Do not claim PASS without executing a test.
 
 **Rule:** Use actual UTC timestamps or Git commit timestamps. Never estimate times.

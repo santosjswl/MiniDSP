@@ -1,23 +1,17 @@
-import { Loading } from "./components";
-import { WorkspaceSidebar } from "./workspace-sidebar";
+"use client";
+
+import { usePathname } from "next/navigation";
+import { AppShell } from "./app-shell";
+import { Card, Loading } from "./components";
+import { itemForPath, ITEM_LABELS } from "./workspace-sidebar";
 
 export default function PageLoading() {
+  const item = itemForPath(usePathname());
   return (
-    <div className="app-shell">
-      <WorkspaceSidebar activeItem="dashboard" />
-      <div className="app-main">
-        <header className="workspace-topbar">
-          <div>
-            <p className="eyebrow">Data discovery and classification</p>
-            <h1>Dashboard</h1>
-          </div>
-        </header>
-        <main className="workspace-content">
-          <section className="workspace-section">
-            <Loading label="Loading your workspace..." />
-          </section>
-        </main>
-      </div>
-    </div>
+    <AppShell activeItem={item} title={ITEM_LABELS[item]}>
+      <Card>
+        <Loading label="Loading your workspace..." />
+      </Card>
+    </AppShell>
   );
 }

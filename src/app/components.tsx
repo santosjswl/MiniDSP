@@ -1,12 +1,16 @@
 import type { ReactNode } from "react";
 import type { Risk } from "@/detection";
 
-export function Card({ title, children }: { title: string; children: ReactNode }) {
+export function Card({
+  title, elevated = false, children,
+}: { title?: string; elevated?: boolean; children: ReactNode }) {
   return (
-    <div className="lp-card">
-      <div className="lp-card__header">
-        <div className="lp-card__title" role="heading" aria-level={3}>{title}</div>
-      </div>
+    <div className={elevated ? "lp-card lp-card--elevated lp-card--borderless" : "lp-card"}>
+      {title && (
+        <div className="lp-card__header">
+          <div className="lp-card__title" role="heading" aria-level={3}>{title}</div>
+        </div>
+      )}
       <div className="lp-card__body">{children}</div>
     </div>
   );

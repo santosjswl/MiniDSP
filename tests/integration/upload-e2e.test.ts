@@ -265,3 +265,24 @@ describe("Milestone 4 QA: totals, filters and CSV export (REAL app + dev databas
     expect(csvRows(text).length - 1).toBe(bRows.length);
   });
 });
+
+describe("Sidebar routes (REAL app, signed-in user A)", () => {
+  it.each([
+    ["/", "Dashboard"],
+    ["/upload", "Upload"],
+    ["/findings", "Findings"],
+  ])("serves %s as its own page with one active sidebar item", async (path, label) => {
+    const response = await fetch(`${baseUrl}${path}`, { headers: { cookie }, redirect: "manual" });
+    expect(response.status).toBe(200);
+    const html = await response.text();
+    expect(html).not.toMatch(/NEXT_REDIRECT;[^;]*;\/login/);
+    expect(html).toContain(`<h1>${label}</h1>`);
+    expect(html).toContain("Signed in as");
+    const active = [...html.matchAll(/<a\s[^>]*aria-current="page"[^>]*>/g)].map((m) => m[0].match(/href="([^"]*)"/)?.[1]);
+    // Streamed HTML can contain the loading.tsx fallback shell for the same route; it must mark the same item.
+    expect(active.length).toBeGreaterThan(0);
+    expect(new Set(active)).toEqual(new Set([path]));
+    expect(html).not.toMatch(/href="\/#(dashboard|upload|findings)"/);
+    for (const raw of RAW_SYNTHETIC_VALUES) expect(html).not.toContain(raw);
+  });
+});

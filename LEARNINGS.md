@@ -15,4 +15,6 @@ After each phase, the Agent asks the developer for one useful learning and recor
 - **Testing/deployment:** Behind TLS inspection, Node fails with `SELF_SIGNED_CERT_IN_CHAIN` and supabase-js reports a vague retryable fetch error; set `NODE_USE_SYSTEM_CA=1` rather than disabling TLS verification.
 - **Export:** Quote every CSV field *and* prefix `'` to cells starting with `= + - @ \t \r`; quoting alone does not stop spreadsheets evaluating an uploaded filename like `=HYPERLINK(...)`.
 - **Testing:** A hidden browser tab never runs animation frames, so React streaming reveals stall on the loading fallback; check `document.visibilityState` before blaming the app.
+- **UI:** Set `box-sizing: border-box` globally; `inline-size: 100%` plus padding silently overflows. Verify with `scrollWidth <= innerWidth` at 390px, not by eye. Never put a Card inside another bordered panel. Things that must wrap on mobile belong in a layout row, not a component's internal slot.
+- **UI/routing:** Give each sidebar item its own route with its own server-side session check. Shared `loading.tsx`/`error.tsx` must derive the active item from the pathname. Streamed HTML contains both the loading fallback and the page, so assert on the *set* of active hrefs. Signed-out pages stream 200 + `NEXT_REDIRECT`, not 307.
 - **What I'd do differently:**

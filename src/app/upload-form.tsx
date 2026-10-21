@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState, type FormEvent } from "react";
 import type { Finding, Risk } from "@/detection";
 import { TYPE_LABELS } from "@/lib/scans";
@@ -57,7 +58,6 @@ export function UploadForm({ onSaved }: { onSaved?: () => Promise<void> }) {
 
   return (
     <div className="stack">
-      <p>Synthetic data only. CSV or TXT, 1 byte to 1 MiB. Originals are not retained.</p>
       <form onSubmit={onSubmit} className="stack" aria-busy={busy}>
         <div className="lp-input lp-input--full-width">
           <div className="lp-input__row lp-input__row--label-top">
@@ -83,7 +83,7 @@ export function UploadForm({ onSaved }: { onSaved?: () => Promise<void> }) {
       {error && <Message title="Upload could not complete">{error}</Message>}
       {result && (
         <section aria-label="Latest scan results" className="stack">
-          <Message variant="success" title="Scan saved">{result.fileName}: {result.overallRisk} ({result.totalFindings} findings). Saved to your history; use Refresh data if the dashboard does not update.</Message>
+          <Message variant="success" title="Scan saved">{result.fileName}: {result.overallRisk} ({result.totalFindings} findings). Saved to your history. <Link className="lp-link lp-link--inline" href="/findings">View all findings</Link> or <Link className="lp-link lp-link--inline" href="/">open the dashboard</Link>.</Message>
           <p>Classification: <RiskBadge risk={result.overallRisk} /></p>
           {result.findings.length === 0 ? <p>No sensitive-data patterns detected.</p> : (
             <DataTable label="Latest scan findings" columns={["Type", "Risk", "Count", "Masked example"]}>
