@@ -59,10 +59,23 @@ export function UploadForm({ onSaved }: { onSaved?: () => Promise<void> }) {
     <div className="stack">
       <p>Synthetic data only. CSV or TXT, 1 byte to 1 MiB. Originals are not retained.</p>
       <form onSubmit={onSubmit} className="stack" aria-busy={busy}>
-        <div className="file-picker">
-          <label htmlFor="scan-file">Choose a synthetic file</label>
-          <input ref={input} id="scan-file" name="file" type="file" accept=".csv,.txt" aria-describedby="file-help" disabled={busy} />
-          <p id="file-help" className="muted">Validation and scanning run on the server. Results contain masked examples only.</p>
+        <div className="lp-input lp-input--full-width">
+          <div className="lp-input__row lp-input__row--label-top">
+            <label className="lp-input__label" htmlFor="scan-file">Choose a synthetic file</label>
+            <div className="lp-input__field">
+              <input
+                ref={input}
+                className="lp-input__input"
+                id="scan-file"
+                name="file"
+                type="file"
+                accept=".csv,.txt"
+                aria-describedby="scan-file-help"
+                disabled={busy}
+              />
+            </div>
+          </div>
+          <p id="scan-file-help" className="lp-input__message">Validation and scanning run on the server. Results contain masked examples only.</p>
         </div>
         <div><button className="lp-button lp-button--primary lp-button--md" type="submit" disabled={busy}>{busy ? "Scanning..." : "Upload and scan"}</button></div>
       </form>

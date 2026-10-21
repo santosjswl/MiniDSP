@@ -29,8 +29,6 @@ body {
 .distribution dd { margin: 0; }
 .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--space-14) * 3)), 1fr)); gap: var(--space-10); }
 .table-scroll { overflow-x: auto; max-inline-size: 100%; min-inline-size: 0; }
-.file-picker { display: flex; flex-direction: column; gap: var(--space-6); min-inline-size: 0; }
-.file-picker input { max-inline-size: 100%; }
 .login-shell { max-inline-size: calc(var(--space-14) * 8); margin-inline: auto; }
 
 @media (min-width: 64rem) {
