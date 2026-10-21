@@ -14,7 +14,7 @@ export default async function HomePage() {
 
   return (
     <div className="app-shell">
-      <WorkspaceSidebar />
+      <WorkspaceSidebar activeItem="dashboard" />
       <div className="app-main">
         <header className="workspace-topbar">
           <div>

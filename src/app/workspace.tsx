@@ -83,7 +83,7 @@ export function Workspace() {
 
   return (
     <div className="stack">
-      <section id="dashboard" aria-labelledby="dashboard-heading" aria-busy={busy} className="stack">
+      <section id="dashboard" aria-labelledby="dashboard-heading" aria-busy={busy} className="stack workspace-section">
         <div className="section-header">
           <div>
             <h2 id="dashboard-heading">Scan overview</h2>
@@ -144,7 +144,7 @@ export function Workspace() {
         )}
       </section>
 
-      <section id="upload" aria-labelledby="upload-heading" className="stack">
+      <section id="upload" aria-labelledby="upload-heading" className="stack workspace-section">
         <div>
           <h2 id="upload-heading">Upload and scan</h2>
           <p className="muted">Scan a synthetic CSV or TXT file. The original is never retained.</p>
@@ -154,7 +154,7 @@ export function Workspace() {
         </Card>
       </section>
 
-      <section id="findings" aria-labelledby="findings-heading" className="stack" aria-busy={busy}>
+      <section id="findings" aria-labelledby="findings-heading" className="stack workspace-section" aria-busy={busy}>
         <h2 id="findings-heading">Findings</h2>
         <p className="muted">Aggregated occurrences. Only masked examples are shown. Dates are in UTC.</p>
         <div className="filters-grid">

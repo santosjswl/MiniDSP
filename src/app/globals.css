@@ -7,6 +7,70 @@ body {
   line-height: var(--typography-body-md-lineHeight);
 }
 
+.app-shell {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  min-block-size: 100vh;
+}
+
+.app-sidebar {
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100vh;
+}
+
+.sidebar-mark {
+  display: grid;
+  place-items: center;
+  inline-size: var(--space-10);
+  block-size: var(--space-10);
+  border-radius: var(--radius-md);
+  background: var(--color-background-surface);
+  color: var(--color-brand-primary);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--typography-heading-h5-fontSize);
+}
+
+.app-main {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.workspace-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-10);
+  border-block-end: var(--space-1) solid var(--color-border-default);
+  background: var(--color-background-surface);
+}
+
+.workspace-topbar h1 { margin: 0; font-size: var(--typography-heading-h3-fontSize); }
+.workspace-topbar .eyebrow { margin: 0; }
+
+.workspace-account {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.workspace-content {
+  max-inline-size: calc(var(--space-14) * 20);
+  margin-inline: auto;
+  inline-size: 100%;
+  padding: var(--space-10);
+}
+
+.workspace-section {
+  padding: var(--space-8);
+  border-radius: var(--radius-md);
+  border: var(--space-1) solid var(--color-border-default);
+  background: var(--color-background-surface);
+}
+
 .product-shell {
   padding: var(--space-10);
   display: flex;
@@ -30,45 +94,6 @@ body {
 .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--space-14) * 3)), 1fr)); gap: var(--space-10); }
 .table-scroll { overflow-x: auto; max-inline-size: 100%; min-inline-size: 0; }
 .login-shell { max-inline-size: calc(var(--space-14) * 8); margin-inline: auto; }
-
-.app-shell {
-  display: grid;
-  grid-template-columns: 100px minmax(0, 1fr);
-  min-block-size: 100vh;
-}
-.app-sidebar {
-  position: sticky;
-  inset-block-start: 0;
-  block-size: 100vh;
-}
-.sidebar-mark {
-  display: grid;
-  place-items: center;
-  inline-size: var(--space-10);
-  block-size: var(--space-10);
-  border-radius: var(--radius-md);
-  background: var(--color-background-surface);
-  color: var(--color-brand-primary);
-  font-weight: var(--font-weight-bold);
-}
-.app-main { min-inline-size: 0; }
-.workspace-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-8);
-  padding: var(--space-8) var(--space-10);
-  border-block-end: var(--space-1) solid var(--color-border-default);
-  background: var(--color-background-surface);
-}
-.workspace-topbar h1 { margin: 0; font-size: var(--typography-heading-h3-fontSize); }
-.workspace-topbar .eyebrow { margin: 0; }
-.workspace-account { display: flex; align-items: center; gap: var(--space-8); }
-.workspace-content {
-  max-inline-size: calc(var(--space-14) * 20);
-  margin-inline: auto;
-  padding: var(--space-10);
-}
 .dashboard-panels { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-9); }
 .risk-share { display: flex; align-items: center; gap: var(--space-6); }
 .risk-bar {
@@ -92,6 +117,7 @@ body {
 }
 
 @media (max-width: 40rem) {
+  .app-shell { grid-template-columns: 84px minmax(0, 1fr); }
   .workspace-topbar { align-items: flex-start; flex-direction: column; padding: var(--space-8); }
   .workspace-account { align-items: flex-start; flex-wrap: wrap; }
   .workspace-content { padding: var(--space-8); }
