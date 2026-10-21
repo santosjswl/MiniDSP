@@ -11,6 +11,7 @@ After each phase, the Agent asks the developer for one useful learning and recor
 - **Security/persistence:** A negative test that writes a "should be rejected" value leaks that value whenever the guard is missing; use synthetic values only and plan cleanup.
 - **UI:** Refresh stored history after a successful scan instead of incrementing optimistic counters; keep the saved result visible and report a failed refresh separately.
 - **UI:** Fixed-layout tables need a token-sized inner canvas and a scrollable wrapper on mobile; shrinking six columns into the viewport hides useful masked examples.
+- **UI:** When a reference calls for primary app navigation, use the documented Lepide Sidebar anatomy and keep dashboard charts/totals derived from stored records rather than decorative placeholders.
 - **Testing/deployment:** Behind TLS inspection, Node fails with `SELF_SIGNED_CERT_IN_CHAIN` and supabase-js reports a vague retryable fetch error; set `NODE_USE_SYSTEM_CA=1` rather than disabling TLS verification.
 - **Export:** Quote every CSV field *and* prefix `'` to cells starting with `= + - @ \t \r`; quoting alone does not stop spreadsheets evaluating an uploaded filename like `=HYPERLINK(...)`.
 - **Testing:** A hidden browser tab never runs animation frames, so React streaming reveals stall on the loading fallback; check `document.visibilityState` before blaming the app.

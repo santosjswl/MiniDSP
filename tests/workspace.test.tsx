@@ -21,6 +21,10 @@ describe("Milestone 3 UI flow (DOM, mocked HTTP)", () => {
     expect(within(table).getByText("a***@example.test")).toBeTruthy();
     const totals = screen.getByLabelText("Scan totals");
     expect(within(totals).getByText("3")).toBeTruthy();
+    const distribution = screen.getByRole("table", { name: "Risk distribution" });
+    expect(within(distribution).getByText("Critical")).toBeTruthy();
+    expect(within(distribution).getByText("100%")).toBeTruthy();
+    expect(within(distribution).getAllByRole("meter")).toHaveLength(5);
     expect(screen.getByRole("table", { name: "Recent scans" })).toBeTruthy();
     expect(document.body.textContent).not.toContain("alex@example.test");
   });

@@ -172,6 +172,27 @@
 - **Outstanding / UNVERIFIED:** live hardening migration plus cleanup of leaked rows, then the RLS suite (expect 11/11); browser click-download; manual keyboard/accessibility; design-owner sign-off; existing dev-dependency audit advisories. Real tests add synthetic scans to the dev test accounts (including one formula-named file per run).
 - Git: `master`, no commits, everything untracked. No commit, push or deployment.
 
+## UI reference refresh (2026-10-21T09:29:54Z)
+
+- Human request: update the app UI to match the attached MiniDSP screenshots. This is a UI task only; the separate GitHub/Vercel deployment request was not performed.
+- Added the documented Lepide `lp-sidebar` rail and a compact workspace header. Dashboard is the initial section; the rail navigates to dashboard, upload, and findings. The existing sign-out POST remains available in the header.
+- Reordered the workspace so the dashboard is first, followed by upload and findings. Added a risk distribution table with data-derived file counts and percentages/share bars, keeping the recent scans table and all metrics sourced from stored history. No data-flow, auth, scan, or export logic changed.
+- Used Lepide tokens and documented Sidebar/Card/Table components, no Tailwind or new dependencies. Sidebar width and canonical classes are from `design.md`'s Sidebar section.
+
+### Actual validation evidence
+
+| Exact command | Result | Exit |
+|---|---|---|
+| `npx vitest run tests/workspace.test.tsx tests/pages.test.tsx` | 18 passed / 0 failed / 0 skipped; 2 files | 0 |
+| `npm test` | 76 passed / 0 failed / 0 skipped; 9 files | 0 |
+| `npx tsc --noEmit` | No type errors | 0 |
+| `npm run lint` | 0 errors / 0 warnings | 0 |
+| `npm run build` | Production build completed; 7 routes plus proxy | 0 |
+
+- Added a DOM assertion that the risk-distribution table has five meter rows and reflects the fixture's 100% Critical share.
+- Browser visual check: **UNVERIFIED**. Local `GET /login` returned 200, but the integrated browser tab stayed on "Loading your workspace..." and did not hydrate, as in the previous browser check. No screenshot or live-browser behavior is claimed as verified. The existing design inventory and DOM tests were checked instead.
+- Current Git status: branch `main`; modified `src/app/globals.css`, `src/app/page.tsx`, `src/app/workspace.tsx`, `tests/workspace.test.tsx`; new untracked `src/app/workspace-sidebar.tsx`. No commit, push, or deployment.
+
 **Rule:** Keep failures and retests. Do not claim PASS without executing a test.
 
 **Rule:** Use actual UTC timestamps or Git commit timestamps. Never estimate times.

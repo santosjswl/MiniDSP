@@ -31,6 +31,73 @@ body {
 .table-scroll { overflow-x: auto; max-inline-size: 100%; min-inline-size: 0; }
 .login-shell { max-inline-size: calc(var(--space-14) * 8); margin-inline: auto; }
 
+.app-shell {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  min-block-size: 100vh;
+}
+.app-sidebar {
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100vh;
+}
+.sidebar-mark {
+  display: grid;
+  place-items: center;
+  inline-size: var(--space-10);
+  block-size: var(--space-10);
+  border-radius: var(--radius-md);
+  background: var(--color-background-surface);
+  color: var(--color-brand-primary);
+  font-weight: var(--font-weight-bold);
+}
+.app-main { min-inline-size: 0; }
+.workspace-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-10);
+  border-block-end: var(--space-1) solid var(--color-border-default);
+  background: var(--color-background-surface);
+}
+.workspace-topbar h1 { margin: 0; font-size: var(--typography-heading-h3-fontSize); }
+.workspace-topbar .eyebrow { margin: 0; }
+.workspace-account { display: flex; align-items: center; gap: var(--space-8); }
+.workspace-content {
+  max-inline-size: calc(var(--space-14) * 20);
+  margin-inline: auto;
+  padding: var(--space-10);
+}
+.dashboard-panels { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-9); }
+.risk-share { display: flex; align-items: center; gap: var(--space-6); }
+.risk-bar {
+  display: block;
+  inline-size: min(100%, calc(var(--space-14) * 3));
+  block-size: var(--space-3);
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-background-subtle);
+}
+.risk-bar__fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--color-brand-primary);
+}
+.risk-share > span:last-child { min-inline-size: calc(var(--space-8) * 2); }
+
+@media (max-width: 64rem) {
+  .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 40rem) {
+  .workspace-topbar { align-items: flex-start; flex-direction: column; padding: var(--space-8); }
+  .workspace-account { align-items: flex-start; flex-wrap: wrap; }
+  .workspace-content { padding: var(--space-8); }
+  .metrics-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
 @media (min-width: 64rem) {
-  .dashboard-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  .metrics-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }

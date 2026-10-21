@@ -83,16 +83,12 @@ export function Workspace() {
 
   return (
     <div className="stack">
-      <section id="upload" aria-labelledby="upload-heading">
-        <h2 id="upload-heading">Upload and scan</h2>
-        <Card title="Discover sensitive data">
-          <UploadForm onSaved={() => refresh()} />
-        </Card>
-      </section>
-
       <section id="dashboard" aria-labelledby="dashboard-heading" aria-busy={busy} className="stack">
         <div className="section-header">
-          <h2 id="dashboard-heading">Dashboard</h2>
+          <div>
+            <h2 id="dashboard-heading">Scan overview</h2>
+            <p className="muted">A live view of your stored scans and classified findings.</p>
+          </div>
           <button className="lp-button lp-button--secondary lp-button--sm" onClick={() => void refresh()} disabled={busy}>Refresh data</button>
         </div>
         {busy && <Loading label="Loading stored scans..." />}
@@ -111,12 +107,29 @@ export function Workspace() {
             {scans.length === 0 ? (
               <EmptyState>No scans yet. Upload a synthetic CSV or TXT file to get started.</EmptyState>
             ) : (
-              <div className="dashboard-grid">
+              <div className="dashboard-panels">
                 <Card title="Risk distribution">
-                  <p className="muted">Files by highest detected risk</p>
-                  <dl className="distribution">{RISKS.map((level) => (
-                    <div className="section-header" key={level}><dt><RiskBadge risk={level} /></dt><dd>{summary.distribution[level]} files</dd></div>
-                  ))}</dl>
+                  <p className="muted">Files grouped by their highest detected risk.</p>
+                  <DataTable label="Risk distribution" columns={["Risk level", "Files", "Share of files"]}>
+                    {RISKS.map((level) => {
+                      const count = summary.distribution[level];
+                      const share = summary.files === 0 ? 0 : (count / summary.files) * 100;
+                      return (
+                        <tr key={level}>
+                          <Cell><RiskBadge risk={level} /></Cell>
+                          <Cell>{count}</Cell>
+                          <Cell>
+                            <div className="risk-share">
+                              <span className="risk-bar" role="meter" aria-label={`${level} share of files`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(share)}>
+                                <span className="risk-bar__fill" style={{ width: `${share}%` }} />
+                              </span>
+                              <span>{Math.round(share)}%</span>
+                            </div>
+                          </Cell>
+                        </tr>
+                      );
+                    })}
+                  </DataTable>
                 </Card>
                 <Card title="Recent scans">
                   <DataTable label="Recent scans" columns={["Filename", "Date (UTC)", "Risk", "Findings"]}>
@@ -129,6 +142,16 @@ export function Workspace() {
             )}
           </>
         )}
+      </section>
+
+      <section id="upload" aria-labelledby="upload-heading" className="stack">
+        <div>
+          <h2 id="upload-heading">Upload and scan</h2>
+          <p className="muted">Scan a synthetic CSV or TXT file. The original is never retained.</p>
+        </div>
+        <Card title="Choose a file">
+          <UploadForm onSaved={() => refresh()} />
+        </Card>
       </section>
 
       <section id="findings" aria-labelledby="findings-heading" className="stack" aria-busy={busy}>

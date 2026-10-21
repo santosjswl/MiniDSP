@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Workspace } from "./workspace";
+import { WorkspaceSidebar } from "./workspace-sidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -12,19 +13,25 @@ export default async function HomePage() {
   if (!user) redirect("/login");
 
   return (
-    <main className="product-shell">
-      <header className="section-header">
-        <div><p className="eyebrow">Data discovery and classification</p><h1>MiniDSP</h1><p className="muted">Signed in as {user.email}</p></div>
-        <form method="post" action="/auth/sign-out">
-          <button className="lp-button lp-button--secondary lp-button--md" type="submit">Sign out</button>
-        </form>
-      </header>
-      <nav className="flow-row" aria-label="Workspace sections">
-        <a className="lp-link lp-link--standalone" href="#upload">Upload</a>
-        <a className="lp-link lp-link--standalone" href="#dashboard">Dashboard</a>
-        <a className="lp-link lp-link--standalone" href="#findings">Findings</a>
-      </nav>
-      <Workspace />
-    </main>
+    <div className="app-shell">
+      <WorkspaceSidebar />
+      <div className="app-main">
+        <header className="workspace-topbar">
+          <div>
+            <p className="eyebrow">Data discovery and classification</p>
+            <h1>Dashboard</h1>
+          </div>
+          <div className="workspace-account">
+            <span className="muted">Signed in as {user.email}</span>
+            <form method="post" action="/auth/sign-out">
+              <button className="lp-button lp-button--secondary lp-button--sm" type="submit">Sign out</button>
+            </form>
+          </div>
+        </header>
+        <main className="workspace-content">
+          <Workspace />
+        </main>
+      </div>
+    </div>
   );
 }
