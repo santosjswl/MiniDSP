@@ -1,0 +1,8 @@
+Malformed email alex@@example.test
+Short phone 12345
+Invalid first NINO letter DB 12 34 56 C
+Reserved NINO prefix BG 12 34 56 C
+Invalid NINO suffix AB 12 34 56 E
+Invalid card checksum 4111 1111 1111 1112
+Long digit run 41111111111111111111
+Long phone-like run 07700900123456789012

@@ -1,0 +1,6 @@
+Email alex@example.test
+Repeated email alex@example.test
+UK mobile 07700 900123
+International mobile +44 7700 900123
+NINO AB 12 34 56 C
+Card 4111 1111 1111 1111
